@@ -1,4 +1,4 @@
-import apiAuth, { APP_KEY } from "@/config/api";
+import { api, apiAuth, APP_KEY } from "@/config/api";
 
 /**
  * Login dengan Google access token ke API RuangKerja
@@ -18,14 +18,18 @@ export async function loginWithGoogle(accessToken) {
   return data;
 }
 
-export async function fetchProfile(token) {
-  const { data } = await apiAuth.get("/auth/profile", {
-    params: {
-      appKey: APP_KEY,
-      token: token,
-    },
+export async function createUserInBackend(userData) {
+  const { data } = await api.post("/auth/login", {
+    firstName: userData.firstName,
+    lastName: userData.lastName,
+    email: userData.email,
   });
 
-  return data;
+  
+  if (data.message === "Data user sudah ada di Database") {
+    return null; // User sudah ada, tidak perlu buat baru
+  }
+  if (data.message !== "User baru   berhasil dibuat") {
+    throw new Error("Gagal membuat user di backend. Silakan coba lagi.");
+  }
 }
-

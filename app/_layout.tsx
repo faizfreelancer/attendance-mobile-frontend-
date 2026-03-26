@@ -40,7 +40,8 @@ function RootNavigator() {
         <Stack.Protected guard={!!isAuthenticated}>
           <Stack.Screen name="(protected)" />
         </Stack.Protected>
-        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(auth)"  />
+        <Stack.Screen name="index" />
       </Stack>
     </PaperProvider>
   );

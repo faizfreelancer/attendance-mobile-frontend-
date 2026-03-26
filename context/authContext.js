@@ -11,7 +11,7 @@ import {
   isErrorWithCode,
 } from "@react-native-google-signin/google-signin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loginWithGoogle, getProfile  } from "@/services/authServices";
+import { loginWithGoogle, getProfile, createUserInBackend  } from "@/services/authServices";
 
 
 const STORAGE_KEYS = {
@@ -84,11 +84,13 @@ export function AuthProvider({ children }) {
       }
 
       const authResponse = await loginWithGoogle(googleAccessToken);
+      
 
       setAccessToken(authResponse.accessToken);
       setUser(authResponse.data);
       
       await saveSession(authResponse.accessToken, authResponse.data);
+      await createUserInBackend(authResponse.data);
     } catch (error) {
       if (isErrorWithCode(error)) {
         switch (error.code) {
