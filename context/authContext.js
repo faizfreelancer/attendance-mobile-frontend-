@@ -1,20 +1,23 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+import {
+  createUserInBackend,
+  getProfile,
+  loginWithGoogle,
+} from "@/services/authServices";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   GoogleSignin,
-  statusCodes,
   isErrorWithCode,
+  statusCodes,
 } from "@react-native-google-signin/google-signin";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { loginWithGoogle, getProfile, createUserInBackend  } from "@/services/authServices";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   ACCESS_TOKEN: "@ruangkerja:accessToken",
   USER_DATA: "@ruangkerja:userData",
 };
@@ -34,7 +37,6 @@ export function AuthProvider({ children }) {
 
     loadStoredSession();
   }, []);
-  
 
   const loadStoredSession = async () => {
     try {
@@ -84,11 +86,10 @@ export function AuthProvider({ children }) {
       }
 
       const authResponse = await loginWithGoogle(googleAccessToken);
-      
 
       setAccessToken(authResponse.accessToken);
       setUser(authResponse.data);
-      
+
       await saveSession(authResponse.accessToken, authResponse.data);
       await createUserInBackend(authResponse.data);
     } catch (error) {
@@ -126,11 +127,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   const fetchProfile = useCallback(async () => {
-    if (!accessToken) return;
+    const storedToken = await AsyncStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+    if (!storedToken) return;
     try {
-      const profile = await getProfile(accessToken);
-      console.log("Profile:", profile);
-    } catch (error) {
+      const profile = await getProfile(storedToken);
+      setUser(profile.data);
+     } catch (error) {
       console.warn("Gagal mengambil profil:", error);
     }
   }, [accessToken]);

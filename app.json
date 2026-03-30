@@ -40,6 +40,12 @@
           }
         }
       ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Aplikasi membutuhkan akses lokasi untuk fitur check-in."
+        }
+      ],
       "@react-native-google-signin/google-signin"
     ],
     "experiments": {

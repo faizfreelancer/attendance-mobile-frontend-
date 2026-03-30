@@ -7,6 +7,7 @@ export const ONBOARDING_KEY = "hasSeenOnboarding";
 
 export default function Index() {
   const router = useRouter();
+ 
 
   useEffect(() => {
     checkOnboarding();
@@ -16,10 +17,8 @@ export default function Index() {
     try {
       const seen = await AsyncStorage.getItem(ONBOARDING_KEY);
       if (seen === "true") {
-        // Sudah pernah onboarding → langsung ke login
         router.replace("/(auth)");
       } else {
-        // Pertama kali buka → tampilkan onboarding
         router.replace("/onboarding");
       }
     } catch {

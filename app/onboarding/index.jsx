@@ -529,7 +529,7 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0f4ff",
+    backgroundColor: "#ffffff",
   },
   skipBtn: {
     position: "absolute",
@@ -559,7 +559,6 @@ const styles = StyleSheet.create({
   textArea: {
     flex: 1,
     paddingHorizontal: 32,
-    paddingTop: 32,
     alignItems: "center",
   },
   chip: {
@@ -592,7 +591,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     paddingBottom: 48,
     paddingTop: 16,
-    backgroundColor: "#f0f4ff",
+    backgroundColor: "#ffffff",
   },
   dotsRow: {
     flexDirection: "row",
