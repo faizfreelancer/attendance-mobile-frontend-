@@ -2,7 +2,7 @@ import {
   createUserInBackend,
   getProfile,
   loginWithGoogle,
-} from "@/services/authServices";
+} from "@/services/authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   GoogleSignin,
@@ -86,12 +86,11 @@ export function AuthProvider({ children }) {
       }
 
       const authResponse = await loginWithGoogle(googleAccessToken);
-
-      setAccessToken(authResponse.accessToken);
-      setUser(authResponse.data);
-
-      await saveSession(authResponse.accessToken, authResponse.data);
-      await createUserInBackend(authResponse.data);
+      console.log(authResponse);
+      
+      setAccessToken(authResponse.token);
+      setUser(authResponse.user);
+      await saveSession(authResponse.token, authResponse.user);
     } catch (error) {
       if (isErrorWithCode(error)) {
         switch (error.code) {

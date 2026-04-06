@@ -6,9 +6,8 @@ import { useCamera } from "@/hooks/useCamera";
 import { useCurrentTime } from "@/hooks/useCurrentTime";
 import { useLists } from "@/hooks/useLists";
 import { useLocationCheck } from "@/hooks/useLocationCheck";
-import { useState } from "react";
 import {
-  Alert,
+    Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -20,10 +19,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NoteSection } from "../../components/NotesSection";
 import { useNote } from "../../hooks/useNote";
-import { checkIn } from "../../services/checkinService";
+import { checkout } from "../../services/checkoutService";
 
 export default function CheckInScreen() {
-  const [isLoading, setIsLoading] = useState(false);
   const currentTime = useCurrentTime();
   const { location, isInRange } = useLocationCheck();
   const { note, setNote } = useNote();
@@ -43,25 +41,22 @@ export default function CheckInScreen() {
     handleResetPhoto,
   } = useCamera();
 
-  const handleCheckIn = async () => {
+  const handleCheckout = async () => {
     try {
-      setIsLoading(true);
-      const data = await checkIn(
+      const data = await checkout(
         location.coords.latitude,
         location.coords.longitude,
         note,
         { uri: photoUri },
         Lists.map((t) => t.text),
       );
-      Alert.alert("Sukses", "Check-in berhasil!");
-      console.log("Check-in berhasil:", data);
+      Alert.alert("Sukses", "Check-out berhasil!");
+      console.log("Check-out berhasil:", data);
     } catch (e) {
-      console.error("Check-in gagal:", e);
-      Alert.alert("Gagal", "Check-in gagal!");
-      console.log("STATUS:", e.response?.status);
+      Alert.alert("Gagal", "Check-out gagal!");
+      console.error("Check-out gagal:", e);
+      console.log("STATUS:", e.response?.status );
       console.log("DATA:", e.response?.data);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -71,7 +66,7 @@ export default function CheckInScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <BackHeader page="Check In" />
+        <BackHeader page="Check Out" />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView
             contentContainerStyle={styles.scroll}
@@ -91,7 +86,7 @@ export default function CheckInScreen() {
               onResetPhoto={handleResetPhoto}
             />
 
-            <NoteSection page="Check In" note={note} onChangeNote={setNote} />
+            <NoteSection note={note} onChangeNote={setNote} page="Check Out" />
 
             <ListsSection
               Lists={Lists}
@@ -99,7 +94,7 @@ export default function CheckInScreen() {
               onChangeInput={setInputList}
               onAdd={handleAddList}
               onRemove={handleRemoveList}
-              placeholder="Tambah tugas yang akan dikerjakan hari ini..."
+              placeholder="Tambah tugas yang sudah dikerjakan..."
             />
 
             <View style={{ height: 120 }} />
@@ -110,8 +105,7 @@ export default function CheckInScreen() {
         currentTime={currentTime}
         isInRange={isInRange}
         photoUri={photoUri}
-        onSubmit={handleCheckIn}
-        isLoading={isLoading}
+        onSubmit={handleCheckout}
       />
     </SafeAreaView>
   );

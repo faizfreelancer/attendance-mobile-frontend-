@@ -7,26 +7,36 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Text
 } from "react-native";
-import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 
 // ─── Data dummy ──────────────────────────────────────────────────────────────
 const recentActivity = [
   {
     id: "1",
-    title: "Headquarters",
-    location: "Jakarta Pusat",
+    title: "Telah Berhasil Check In",
+    date: "12 Sep 2024",
     time: "08:12",
-    status: "CHECK IN",
     statusColor: "#22c55e",
     iconColor: "#1a2340",
     iconBg: "#e8ecf5",
-  }
+  },
+  {
+    id: "2",
+    title: "Telah Berhasil Check Out",
+    date: "12 Sep 2024",
+    time: "17:05",
+    statusColor: "#f43f5e",
+    iconColor: "#1a2340",
+    iconBg: "#e8ecf5",
+  },
 ];
 
 // ─── Screen ──────────────────────────────────────────────────────────────────
 export default function HomeScreen() {
+  const router = useRouter();
   const checkInTime = "08:12";
   const checkOutTime = null; // null = belum check out
   const [refreshing, setRefreshing] = useState(false);
@@ -61,7 +71,7 @@ export default function HomeScreen() {
             {/* Greeting */}
             <View style={styles.greetWrap}>
               <Text style={styles.greetSub}>Selamat Datang,</Text>
-              <Text style={styles.greetName}>Alex Harrison</Text>
+              <Text style={styles.greetName}>Muhammad Faiz</Text>
             </View>
 
             <Image
@@ -116,14 +126,12 @@ export default function HomeScreen() {
 
           {/* Tombol aksi */}
           <View style={styles.btnRow}>
-            {/* Checked In (ghost) */}
-            <TouchableOpacity style={styles.btnGhost} activeOpacity={0.75}>
-              <Ionicons name="log-in-outline" size={17} color="#8492b0" />
-              <Text style={styles.btnGhostText}>Checked In</Text>
+            <TouchableOpacity onPress={()=> router.push("/checkin")} style={styles.btnSolid} activeOpacity={0.75}>
+              <Ionicons name="log-in-outline" size={17} color="#fff" />
+              <Text style={styles.btnSolidText}>Check In</Text>
             </TouchableOpacity>
-
-            {/* Check Out (solid) */}
-            <TouchableOpacity style={styles.btnSolid} activeOpacity={0.85}>
+        
+            <TouchableOpacity onPress={()=> router.push("/checkout")} style={styles.btnSolid} activeOpacity={0.85}>
               <MaterialCommunityIcons
                 name="export"
                 size={17}
@@ -138,9 +146,11 @@ export default function HomeScreen() {
         {/* ── Recent Activity ── */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Activity</Text>
+            <Text style={styles.sectionTitle}>Aktivitas Terakhir</Text>
             <TouchableOpacity activeOpacity={0.7}>
-              <Feather name="more-horizontal" size={20} color="#8492b0" />
+              <Text style={[styles.btnGhostText]}>
+                Lihat Semua
+              </Text>
             </TouchableOpacity>
           </View>
 
@@ -154,30 +164,21 @@ export default function HomeScreen() {
                     { backgroundColor: item.iconBg },
                   ]}
                 >
-                  <Ionicons name="location" size={20} color={item.iconColor} />
+                  <MaterialCommunityIcons name="history" size={20} color={item.iconColor} />
                 </View>
 
                 {/* Info */}
                 <View style={styles.activityInfo}>
                   <Text style={styles.activityTitle}>{item.title}</Text>
-                  <View style={styles.activityLocationRow}>
-                    <Ionicons
-                      name="location-outline"
-                      size={11}
-                      color="#b0bbd4"
-                    />
-                    <Text style={styles.activityLocation}>{item.location}</Text>
+                  <View style={styles.activityDateRow}>
+                    <Text style={styles.activityDate}>{item.date}</Text>
                   </View>
                 </View>
 
                 {/* Waktu & Status */}
                 <View style={styles.activityRight}>
                   <Text style={styles.activityTime}>{item.time}</Text>
-                  <Text
-                    style={[styles.activityStatus, { color: item.statusColor }]}
-                  >
-                    {item.status}
-                  </Text>
+                  
                 </View>
               </View>
 
@@ -199,7 +200,7 @@ const BLUE = "#1033c0";
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#f0f4ff",
+    backgroundColor: "#ffffff",
   },
   scroll: {
     paddingBottom: 32,
@@ -407,12 +408,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#1a2340",
   },
-  activityLocationRow: {
+  activityDateRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 2,
   },
-  activityLocation: {
+  activityDate: {
     fontSize: 12,
     color: "#b0bbd4",
     fontWeight: "500",
@@ -425,11 +426,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "800",
     color: "#1a2340",
-  },
-  activityStatus: {
-    fontSize: 10,
-    fontWeight: "700",
-    letterSpacing: 0.5,
   },
   itemDivider: {
     height: 1,

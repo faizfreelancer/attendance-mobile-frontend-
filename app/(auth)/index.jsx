@@ -1,8 +1,7 @@
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "../../context/authContext";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
-import { Alert, Image, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Text } from "react-native-paper";
+import { Alert, Image, StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
@@ -48,8 +47,7 @@ export default function LoginScreen() {
           Masuk ke Akun Kamu
         </Text>
         <Text variant="bodyMedium" style={styles.loginSub}>
-          Gunakan akun Google kantor untuk masuk dan mulai mencatat kehadiranmu
-          hari ini.
+          Gunakan akun Google untuk masuk dan mulai mencatat kehadiranmu hari.
         </Text>
 
         {/* Tombol Google */}
@@ -85,7 +83,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#f0f4ff", // warna background di bawah card
+    backgroundColor: "#ff  f", // warna background di bawah card
   },
 
   // ── Header ──────────────────────────────────────────

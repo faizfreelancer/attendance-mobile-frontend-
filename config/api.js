@@ -1,10 +1,11 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getAppConfig } from "./appConfig";
 
 export const APP_KEY = process.env.EXPO_PUBLIC_APP_KEY;
 
 export const apiAuth = axios.create({
-  baseURL: process.env.EXPO_PUBLIC_API_URL,
+  baseURL: process.env.EXPO_PUBLIC_API_LOCAL_URL,
   headers: { "Content-Type": "application/json" },
 });
 

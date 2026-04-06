@@ -2,8 +2,8 @@ import { useAuth } from "@/context/authContext";
 import { Stack, useRouter } from "expo-router";
 import { useEffect } from "react";
 
-export default function ProtectedLayout() {
-  const { isAuthenticated, isLoading } = useAuth();
+export default function AuthLayout() {
+  const { isAuthenticated } = useAuth();
   const router = useRouter()
   useEffect(()=>{
     if (isAuthenticated) {
