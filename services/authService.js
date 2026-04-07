@@ -15,20 +15,6 @@ export async function loginWithGoogle(accessToken) {
   return data;
 }
 
-export async function collectInHrm(token) {
-  const { data } = await api.get (
-    "hrm/my/attendances",
-    {
-      params: {
-        appKey: APP_KEY,
-        token: token,
-        collect: "employee",
-      },
-    },
-  );
-
-  return data;
-}
 
 export async function getMyAccount(token) {
   const { data } = await api.get("account/my/accounts", {

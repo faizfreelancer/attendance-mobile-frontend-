@@ -1,4 +1,8 @@
-import { collectInHrm, getMyAccount, getProfile, loginWithGoogle } from "@/services/authService";
+import {
+  getMyAccount,
+  getProfile,
+  loginWithGoogle,
+} from "@/services/authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import React, {
@@ -15,6 +19,7 @@ const AuthContext = createContext(undefined);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+  const [connectionToken, setConnectionToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -75,11 +80,16 @@ export function AuthProvider({ children }) {
       }
 
       const loginWithGoogleResponse = await loginWithGoogle(googleAccessToken);
-      const myAccountREsponse = await getMyAccount(loginWithGoogleResponse.accessToken);
+      const myAccountREsponse = await getMyAccount(
+        loginWithGoogleResponse.accessToken,
+      );
 
-      setAccessToken(myAccountREsponse.accessToken);
-      setUser(loginWithGoogleResponse.data.client);
-      await saveSession(myAccountREsponse.accessToken, loginWithGoogleResponse.data.client);
+      setConnectionToken(myAccountREsponse.data[0].my.user.accessToken);
+      setUser(myAccountREsponse.data[0].my.user);
+      await saveSession(
+        myAccountREsponse.data[0].my.user.accessToken,
+        myAccountREsponse.data[0].my.user,
+      );
     } catch (error) {
       console.log(error);
     } finally {
