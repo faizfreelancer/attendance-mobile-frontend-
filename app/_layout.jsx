@@ -7,6 +7,7 @@ import {
 } from "react-native-paper";
 import { AuthProvider, useAuth } from "../context/authContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { loadAppConfig } from "@/config/appConfig";
 
 const theme = {
   ...DefaultTheme,
@@ -23,15 +24,21 @@ SplashScreen.setOptions({
 });
 
 function RootNavigator() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated} = useAuth();
   const navigationState = useRootNavigationState();
+
+   useEffect(() => {
+     loadAppConfig(); // panggil sekali di sini, paling awal
+   }, []);
+
   useEffect(() => {
-    if (!navigationState?.key || isLoading) return;
+    if (!navigationState?.key) return;
     SplashScreen.hideAsync();
-  }, [navigationState?.key, isLoading, isAuthenticated]);
+  }, [navigationState?.key, isAuthenticated]);
 
   return (
     <PaperProvider theme={theme}>
+      <SafeAreaProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
@@ -39,6 +46,7 @@ function RootNavigator() {
           <Stack.Screen name="(tabs)" />
         </Stack.Protected>
       </Stack>
+      </SafeAreaProvider>
     </PaperProvider>
   );
 }

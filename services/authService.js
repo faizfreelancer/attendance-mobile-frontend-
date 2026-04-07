@@ -1,27 +1,49 @@
-import { api, apiAuth, APP_KEY } from "../config/api";
+import { api, APP_KEY } from "../config/api";
 
 export async function loginWithGoogle(accessToken) {
-  console.log(accessToken);
-
-  const { data } = await apiAuth.post(
-    "/auth/google",
-    {},
+  const { data } = await api.get(
+    "/auth/login/google",
     {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+      params: {
+        appKey: APP_KEY,
+        access_token: accessToken,
       },
-    }
+    },
   );
-
-  if (data.message !== "Login berhasil") {
-    throw new Error("Login tidak berhasil. Silakan coba lagi.");
-  }
+  
 
   return data;
 }
 
+export async function collectInHrm(token) {
+  const { data } = await api.get (
+    "hrm/my/attendances",
+    {
+      params: {
+        appKey: APP_KEY,
+        token: token,
+        collect: "employee",
+      },
+    },
+  );
+
+  return data;
+}
+
+export async function getMyAccount(token) {
+  const { data } = await api.get("account/my/accounts", {
+    params: {
+      appKey: APP_KEY,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data;
+}
+
 export async function getProfile(token) {
-  const { data } = await apiAuth.get("/dev/account/me", {
+  const { data } = await api.get("/dev/account/me", {
     params: {
       appKey: APP_KEY,
       token: token,

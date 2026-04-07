@@ -1,14 +1,6 @@
-import {
-  createUserInBackend,
-  getProfile,
-  loginWithGoogle,
-} from "@/services/authService";
+import { collectInHrm, getMyAccount, getProfile, loginWithGoogle } from "@/services/authService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  GoogleSignin,
-  isErrorWithCode,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import React, {
   createContext,
   useCallback,
@@ -16,11 +8,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-
-export const STORAGE_KEYS = {
-  ACCESS_TOKEN: "@ruangkerja:accessToken",
-  USER_DATA: "@ruangkerja:userData",
-};
+import { STORAGE_KEYS } from "../constants/storageKey";
 
 const AuthContext = createContext(undefined);
 
@@ -80,31 +68,20 @@ export function AuthProvider({ children }) {
 
       const tokens = await GoogleSignin.getTokens();
       const googleAccessToken = tokens.accessToken;
+      console.log(googleAccessToken);
 
       if (!googleAccessToken) {
         throw new Error("Gagal mendapatkan access token dari Google.");
       }
 
-      const authResponse = await loginWithGoogle(googleAccessToken);
-      console.log(authResponse);
-      
-      setAccessToken(authResponse.token);
-      setUser(authResponse.user);
-      await saveSession(authResponse.token, authResponse.user);
+      const loginWithGoogleResponse = await loginWithGoogle(googleAccessToken);
+      const myAccountREsponse = await getMyAccount(loginWithGoogleResponse.accessToken);
+
+      setAccessToken(myAccountREsponse.accessToken);
+      setUser(loginWithGoogleResponse.data.client);
+      await saveSession(myAccountREsponse.accessToken, loginWithGoogleResponse.data.client);
     } catch (error) {
-      if (isErrorWithCode(error)) {
-        switch (error.code) {
-          case statusCodes.SIGN_IN_CANCELLED:
-            throw new Error("Login dibatalkan.");
-          case statusCodes.IN_PROGRESS:
-            throw new Error("Proses login sedang berjalan.");
-          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-            throw new Error("Google Play Services tidak tersedia.");
-          default:
-            throw new Error(`Error Google Sign In: ${error.message}`);
-        }
-      }
-      throw error;
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -131,7 +108,7 @@ export function AuthProvider({ children }) {
     try {
       const profile = await getProfile(storedToken);
       setUser(profile.data);
-     } catch (error) {
+    } catch (error) {
       console.warn("Gagal mengambil profil:", error);
     }
   }, [accessToken]);
